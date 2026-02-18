@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTT - Trouble in Terrorist Town</title>
     <style>
-        /* Основа стиля - тёмная текстура как в GMod, но адаптирована под TTT */
+        /* Базовые стили (те же, что и раньше) */
         body {
             margin: 0;
             padding: 0;
@@ -53,77 +53,147 @@
             letter-spacing: 2px;
         }
 
-        /* Контейнер меню */
-        .menu-container {
-            background: rgba(20, 20, 20, 0.9);
-            border: 2px solid #444;
+        /* Контейнер для основных кнопок */
+        .main-menu {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .main-button {
+            background: #2a2a2a;
+            border: 3px solid #cc0000;
+            color: #cc0000;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 20px 40px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #111, 0 0 20px rgba(204,0,0,0.3);
             border-radius: 10px;
-            width: 450px;
+            transition: all 0.2s ease;
+            letter-spacing: 4px;
+            min-width: 250px;
+        }
+
+        .main-button:hover {
+            background: #cc0000;
+            color: #111;
+            transform: translateY(-3px);
+            box-shadow: 0 11px 0 #8b0000, 0 0 30px #ff0000;
+        }
+
+        .main-button:active {
+            transform: translateY(5px);
+            box-shadow: 0 6px 0 #8b0000, 0 0 30px #ff0000;
+        }
+
+        /* Модальные окна (мини-окошки) */
+        .modal {
+            display: none; /* скрыты по умолчанию */
+            width: 350px;
             max-width: 90%;
+            background: rgba(20, 20, 20, 0.95);
+            border: 2px solid #cc0000;
+            border-radius: 10px;
+            padding: 20px;
             margin: 20px auto;
-            padding: 30px 20px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.7), 0 0 15px #cc0000 inset;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9), 0 0 20px #cc0000 inset;
+            position: relative;
             backdrop-filter: blur(2px);
         }
 
-        .menu-container h2 {
-            text-align: center;
-            color: #cc0000;
-            font-size: 2em;
-            margin-top: 0;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            border-bottom: 1px dashed #cc0000;
-            padding-bottom: 10px;
+        .modal.active {
+            display: block;
         }
 
-        /* Кнопки в стиле TTT */
-        .ttt-button {
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #cc0000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #cc0000;
+            font-size: 1.8em;
+            text-transform: uppercase;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #cc0000;
+            font-size: 2em;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ff6666;
+            transform: scale(1.2);
+        }
+
+        /* Кнопки внутри окна ролей */
+        .role-button {
             display: block;
             width: 100%;
-            padding: 15px 20px;
-            margin: 12px 0;
+            padding: 15px;
+            margin: 10px 0;
             background: #2a2a2a;
             border: 2px solid #555;
             color: #cc0000;
-            font-size: 1.4em;
+            font-size: 1.5em;
             font-weight: bold;
             text-transform: uppercase;
-            text-align: left;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 5px 0 #111;
             border-radius: 5px;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            box-shadow: 0 4px 0 #111;
+            transition: all 0.1s ease;
+            text-align: left;
         }
 
-        .ttt-button:hover {
+        .role-button:hover {
             background: #cc0000;
-            border-color: #ff6666;
             color: #111;
-            box-shadow: 0 0 20px #ff0000, 0 5px 0 #8b0000;
+            border-color: #ff6666;
             transform: translateY(-2px);
+            box-shadow: 0 6px 0 #8b0000;
         }
 
-        .ttt-button:active {
-            transform: translateY(3px);
-            box-shadow: 0 0 15px #ff0000, 0 2px 0 #8b0000;
+        .role-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #8b0000;
         }
 
-        /* Эмодзи/иконки для кнопок */
-        .button-icon {
-            font-size: 1.4em;
-            filter: drop-shadow(0 0 5px currentColor);
+        /* Текст управления */
+        .controls-list {
+            color: #ddd;
+            font-size: 1.2em;
+            line-height: 1.8;
         }
 
-        /* Информационный блок (дата) */
+        .controls-list kbd {
+            background: #333;
+            border: 1px solid #cc0000;
+            color: #ffaaaa;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* Информационный блок с датой и описанием */
         .info-text {
             text-align: center;
             color: #aaa;
-            margin: 25px 0 10px;
+            margin: 40px 0 10px;
             font-size: 1.1em;
             border-top: 1px solid #333;
             padding-top: 20px;
@@ -138,12 +208,16 @@
             text-align: center;
             color: #cc0000;
             font-size: 1.2em;
-            min-height: 2em;
-            margin: 15px 0 5px;
+            min-height: 3em;
+            margin: 15px auto;
             background: rgba(0,0,0,0.5);
-            padding: 8px;
+            padding: 15px;
             border-radius: 5px;
             border-left: 3px solid #cc0000;
+            width: 80%;
+            max-width: 600px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         /* Подвал */
@@ -158,13 +232,17 @@
         }
 
         /* Адаптация для мобильных */
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
             .ttt-header h1 {
                 font-size: 2.2em;
             }
-            .ttt-button {
-                font-size: 1.2em;
-                padding: 12px;
+            .main-button {
+                font-size: 1.8em;
+                padding: 15px 20px;
+                min-width: 200px;
+            }
+            .modal {
+                width: 85%;
             }
         }
     </style>
@@ -172,71 +250,152 @@
 <body>
     <header class="ttt-header">
         <h1>TROUBLE IN TERRORIST TOWN</h1>
-        <p>role & action guide</p>
+        <p>role & controls guide</p>
     </header>
 
-    <div class="menu-container">
-        <h2>Роли и управление</h2>
-        
-        <!-- Кнопки ролей и действий -->
-        <button class="ttt-button" id="btnDetective">
-            <span class="button-icon">🕵️</span> Детектив
-        </button>
-        <button class="ttt-button" id="btnTraitor">
-            <span class="button-icon">🗡️</span> Предатель
-        </button>
-        <button class="ttt-button" id="btnInnocent">
-            <span class="button-icon">👤</span> Невиновный
-        </button>
-        <button class="ttt-button" id="btnSearch">
-            <span class="button-icon">🔍</span> Обыск
-        </button>
-        <button class="ttt-button" id="btnRadar">
-            <span class="button-icon">📡</span> Радар
-        </button>
-        <button class="ttt-button" id="btnAmmo">
-            <span class="button-icon">🔫</span> Боеприпасы
-        </button>
-
-        <div class="info-text">
-            Today is <span id="date"></span>
-        </div>
-        <div id="message">Нажми на кнопку, чтобы узнать описание</div>
+    <!-- Две основные кнопки -->
+    <div class="main-menu">
+        <button class="main-button" id="showRoles">РОЛИ</button>
+        <button class="main-button" id="showControls">УПРАВЛЕНИЕ</button>
     </div>
+
+    <!-- Мини-окошко для ролей -->
+    <div id="rolesModal" class="modal">
+        <div class="modal-header">
+            <h3>Выберите роль</h3>
+            <button class="close-btn" id="closeRoles">&times;</button>
+        </div>
+        <button class="role-button" id="roleDetective">🕵️ Детектив</button>
+        <button class="role-button" id="roleTraitor">🗡️ Предатель</button>
+        <button class="role-button" id="roleInnocent">👤 Невиновный</button>
+    </div>
+
+    <!-- Мини-окошко для управления -->
+    <div id="controlsModal" class="modal">
+        <div class="modal-header">
+            <h3>Управление</h3>
+            <button class="close-btn" id="closeControls">&times;</button>
+        </div>
+        <div class="controls-list">
+            <p><kbd>W A S D</kbd> — перемещение</p>
+            <p><kbd>E</kbd> — обыск / использование</p>
+            <p><kbd>R</kbd> — перезарядка</p>
+            <p><kbd>Q</kbd> — быстрое меню покупки (детектив/предатель)</p>
+            <p><kbd>F</kbd> — фонарик</p>
+            <p><kbd>TAB</kbd> — список игроков</p>
+            <p><kbd>C</kbd> — открыть магазин (детектив/предатель)</p>
+            <p><kbd>ЛКМ</kbd> — стрельба</p>
+            <p><kbd>ПКМ</kbd> — прицеливание / специальное действие</p>
+        </div>
+    </div>
+
+    <!-- Блок с датой и местом для описания -->
+    <div class="info-text">
+        Today is <span id="date"></span>
+    </div>
+    <div id="message">Нажми на кнопку "Роли" и выбери роль, чтобы увидеть описание</div>
 
     <footer class="ttt-footer">
         <p>© 2025 TTT Fan Guide. Not affiliated with Facepunch Studios.</p>
     </footer>
 
     <script>
-        // Отображение даты
+        // ---- Элементы DOM ----
+        const rolesModal = document.getElementById('rolesModal');
+        const controlsModal = document.getElementById('controlsModal');
+        const showRolesBtn = document.getElementById('showRoles');
+        const showControlsBtn = document.getElementById('showControls');
+        const closeRoles = document.getElementById('closeRoles');
+        const closeControls = document.getElementById('closeControls');
+        const messageDiv = document.getElementById('message');
+        const dateSpan = document.getElementById('date');
+
+        // ---- Дата ----
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('date').textContent = today.toLocaleDateString('ru-RU', options);
+        dateSpan.textContent = today.toLocaleDateString('ru-RU', options);
 
-        // Функция показа описания
-        function showDescription(text) {
-            document.getElementById('message').textContent = '🔔 ' + text;
+        // ---- Функции для модалок ----
+        function hideAllModals() {
+            rolesModal.classList.remove('active');
+            controlsModal.classList.remove('active');
         }
 
-        // Описания для каждой кнопки
-        document.getElementById('btnDetective').addEventListener('click', () => 
-            showDescription('Детектив: может покупать снаряжение в магазине, исследовать тела, использовать радар. Цель — найти и обезвредить предателей.'));
-        
-        document.getElementById('btnTraitor').addEventListener('click', () => 
-            showDescription('Предатель: имеет доступ к специальному оружию и снаряжению. Может ставить ловушки, отравлять еду, использовать телепортер. Цель — убить всех невиновных и детектива.'));
-        
-        document.getElementById('btnInnocent').addEventListener('click', () => 
-            showDescription('Невиновный: обычный член команды. Нет особых способностей, кроме обыска тел и покупки оружия в магазине у детектива. Цель — выжить и помочь найти предателей.'));
-        
-        document.getElementById('btnSearch').addEventListener('click', () => 
-            showDescription('Обыск (E): позволяет обыскивать тела убитых, чтобы найти улики, оружие или определить роль жертвы. Детектив получает больше информации.'));
-        
-        document.getElementById('btnRadar').addEventListener('click', () => 
-            showDescription('Радар: доступен детективу. Показывает примерное местоположение всех игроков на карте на короткое время. Требует зарядки.'));
-        
-        document.getElementById('btnAmmo').addEventListener('click', () => 
-            showDescription('Боеприпасы: разбросаны по карте. Невиновные могут пополнять запасы патронов. Предатели также могут использовать специальные боеприпасы.'));
+        function showRolesModal() {
+            hideAllModals();
+            rolesModal.classList.add('active');
+        }
+
+        function showControlsModal() {
+            hideAllModals();
+            controlsModal.classList.add('active');
+        }
+
+        // Открытие по кнопкам
+        showRolesBtn.addEventListener('click', showRolesModal);
+        showControlsBtn.addEventListener('click', showControlsModal);
+
+        // Закрытие по крестикам
+        closeRoles.addEventListener('click', () => rolesModal.classList.remove('active'));
+        closeControls.addEventListener('click', () => controlsModal.classList.remove('active'));
+
+        // Закрытие при клике вне окна (необязательно, но удобно)
+        window.addEventListener('click', (e) => {
+            if (e.target === rolesModal) rolesModal.classList.remove('active');
+            if (e.target === controlsModal) controlsModal.classList.remove('active');
+        });
+
+        // ---- Эффект печатающегося текста ----
+        let typingTimer = null;
+        let currentText = '';
+
+        function stopTyping() {
+            if (typingTimer) {
+                clearInterval(typingTimer);
+                typingTimer = null;
+            }
+        }
+
+        function typeText(text, element, speed = 30) {
+            stopTyping(); // останавливаем предыдущий набор
+            element.textContent = ''; // очищаем
+            let i = 0;
+            typingTimer = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingTimer);
+                    typingTimer = null;
+                }
+            }, speed);
+        }
+
+        // ---- Описания ролей ----
+        const descriptions = {
+            detective: '🕵️ Детектив: может покупать снаряжение в магазине, исследовать тела, использовать радар. Цель — найти и обезвредить предателей. Детектив имеет доступ к уникальному оружию и может вызывать подозрение у невиновных.',
+            traitor: '🗡️ Предатель: имеет доступ к специальному оружию и снаряжению. Может ставить ловушки, отравлять еду, использовать телепортер. Цель — убить всех невиновных и детектива, оставаясь незамеченным.',
+            innocent: '👤 Невиновный: обычный член команды. Нет особых способностей, кроме обыска тел и покупки оружия в магазине у детектива. Цель — выжить, сотрудничать с детективом и помочь найти предателей.'
+        };
+
+        // Обработчики для кнопок ролей
+        document.getElementById('roleDetective').addEventListener('click', () => {
+            typeText(descriptions.detective, messageDiv, 25);
+            rolesModal.classList.remove('active'); // закрываем окно после выбора
+        });
+
+        document.getElementById('roleTraitor').addEventListener('click', () => {
+            typeText(descriptions.traitor, messageDiv, 25);
+            rolesModal.classList.remove('active');
+        });
+
+        document.getElementById('roleInnocent').addEventListener('click', () => {
+            typeText(descriptions.innocent, messageDiv, 25);
+            rolesModal.classList.remove('active');
+        });
+
+        // При клике на кнопку управления окно остаётся открытым, пока не закроют крестиком.
+        // Можно также добавить предупреждение, что это просто список.
     </script>
 </body>
 </html>
