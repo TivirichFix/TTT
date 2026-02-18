@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTT - Trouble in Terrorist Town</title>
     <style>
-        /* Базовые стили (без изменений) */
+        /* Базовые стили */
         body {
             margin: 0;
             padding: 0;
@@ -93,8 +93,10 @@
         /* Модальные окна */
         .modal {
             display: none;
-            width: 400px;
+            width: 500px;
             max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
             background: rgba(20, 20, 20, 0.95);
             border: 2px solid #cc0000;
             border-radius: 10px;
@@ -141,15 +143,21 @@
             transform: scale(1.2);
         }
 
+        /* Сетка для кнопок ролей */
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
         /* Кнопки ролей с индивидуальными цветами */
         .role-button {
             display: block;
             width: 100%;
-            padding: 15px;
-            margin: 10px 0;
+            padding: 12px 10px;
             background: #2a2a2a;
             border: 2px solid #555;
-            font-size: 1.5em;
+            font-size: 1.2em;
             font-weight: bold;
             text-transform: uppercase;
             cursor: pointer;
@@ -157,17 +165,20 @@
             box-shadow: 0 4px 0 #111;
             transition: all 0.1s ease;
             text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .role-detective {
-            color: #0066ff;
-        }
-        .role-traitor {
-            color: #cc0000;
-        }
-        .role-innocent {
-            color: #00cc00;
-        }
+        /* Обновлённые цвета согласно заданию */
+        .role-detective { color: #0066ff; }      /* синий */
+        .role-traitor { color: #cc0000; }        /* красный */
+        .role-innocent { color: #00cc00; }       /* зелёный */
+        .role-clown { color: #ff66cc; }          /* розовый */
+        .role-doctor { color: #00cc00; }         /* зелёный (как невиновный) */
+        .role-drunk { color: #8B4513; }          /* коричневый */
+        .role-oldman { color: #8B4513; }         /* коричневый */
+        .role-quack { color: #cc0000; }          /* красный (как предатель) */
 
         .role-button:hover {
             background: #cc0000;
@@ -217,7 +228,7 @@
         }
 
         #message {
-            text-align: left;           /* Выравнивание для удобства чтения */
+            text-align: left;
             color: #cc0000;
             font-size: 1.2em;
             min-height: 5em;
@@ -244,7 +255,7 @@
             margin-top: auto;
         }
 
-        /* Адаптация */
+        /* Адаптация для мобильных */
         @media (max-width: 600px) {
             .ttt-header h1 {
                 font-size: 2.2em;
@@ -255,7 +266,16 @@
                 min-width: 200px;
             }
             .modal {
-                width: 85%;
+                width: 95%;
+                padding: 15px;
+            }
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+            .role-button {
+                font-size: 1.1em;
+                padding: 12px;
+                white-space: normal;
             }
         }
     </style>
@@ -272,15 +292,22 @@
         <button class="main-button" id="showControls">УПРАВЛЕНИЕ</button>
     </div>
 
-    <!-- Мини-окошко для ролей (кнопки с классами цветов) -->
+    <!-- Мини-окошко для ролей -->
     <div id="rolesModal" class="modal">
         <div class="modal-header">
             <h3>Выберите роль</h3>
             <button class="close-btn" id="closeRoles">&times;</button>
         </div>
-        <button class="role-button role-detective" id="roleDetective">🕵️ Детектив</button>
-        <button class="role-button role-traitor" id="roleTraitor">🗡️ Предатель</button>
-        <button class="role-button role-innocent" id="roleInnocent">👤 Невиновный</button>
+        <div class="roles-grid">
+            <button class="role-button role-detective" id="roleDetective">🕵️ Детектив</button>
+            <button class="role-button role-traitor" id="roleTraitor">🗡️ Предатель</button>
+            <button class="role-button role-innocent" id="roleInnocent">👤 Невиновный</button>
+            <button class="role-button role-clown" id="roleClown">🤡 Clown</button>
+            <button class="role-button role-doctor" id="roleDoctor">💊 Doctor</button>
+            <button class="role-button role-drunk" id="roleDrunk">🍺 Drunk</button>
+            <button class="role-button role-oldman" id="roleOldman">👴 Old Man</button>
+            <button class="role-button role-quack" id="roleQuack">🦆 Quack</button>
+        </div>
     </div>
 
     <!-- Мини-окошко для управления -->
@@ -355,7 +382,7 @@
             if (e.target === controlsModal) controlsModal.classList.remove('active');
         });
 
-        // ---- Эффект печатающегося текста с поддержкой переносов ----
+        // ---- Эффект печатающегося текста ----
         let typingTimer = null;
 
         function stopTyping() {
@@ -365,17 +392,15 @@
             }
         }
 
-        // Новая функция печати: принимает CSS-класс для заголовка, сам заголовок и текст описания
         function typeRoleDescription(roleClass, title, body, speed = 25) {
             stopTyping();
-            // Мгновенно выводим цветной заголовок и два переноса строки (как в оригинале)
-            messageDiv.innerHTML = `<span class="${roleClass}">${title}</span><br><br>`;
+            // Цветной заголовок и двоеточие
+            messageDiv.innerHTML = `<span class="${roleClass}">${title}</span>: `;
             let i = 0;
             typingTimer = setInterval(() => {
                 if (i < body.length) {
                     let char = body.charAt(i);
                     if (char === '\n') {
-                        // Заменяем перенос строки на HTML-тег <br>
                         messageDiv.innerHTML += '<br>';
                     } else {
                         messageDiv.innerHTML += char;
@@ -388,35 +413,73 @@
             }, speed);
         }
 
-        // ---- Новые описания ролей (в точности как на картинках) ----
+        // ---- Описания ролей ----
         const roleData = {
             detective: {
-                title: '# Q Detective',   // Заголовок (будет синим)
-                body: 'Роль Detective — член команды невиновных, чья задача — находить и уничтожать врагов.\n\nДругие игроки узнают, что ты Детектив, просто взглянув на тебя.'
+                title: 'Detective',
+                body: 'член команды невиновных, чья задача — находить и уничтожать врагов.\n\nДругие игроки узнают, что ты Детектив, просто взглянув на тебя.'
             },
             traitor: {
-                title: 'Traitor',         // Заголовок (будет красным)
-                body: 'Роль Traitor — член команды предателей, чья задача — убить всех врагов, как невиновных, так и одиночек.'
+                title: 'Traitor',
+                body: 'член команды предателей, чья задача — убить всех врагов, как невиновных, так и одиночек.'
             },
             innocent: {
-                title: '# Innocent',      // Заголовок (будет зелёным)
-                body: 'Роль Innocent — член команды невиновных, не имеющий особых способностей.'
+                title: 'Innocent',
+                body: 'член команды невиновных, не имеющий особых способностей.'
+            },
+            clown: {
+                title: 'Clown',
+                body: 'Роль Clown — это **шут**, цель которого — выжить достаточно долго, чтобы остались только он и одна команда.\n\nКогда команда должна была бы победить, Clown активируется, превращаясь в одиночку, и получает возможность устроить бойню и неожиданно победить.\n\nClown имеет доступ к магазину оружия, но только после активации.'
+            },
+            doctor: {
+                title: 'Doctor',
+                body: 'Роль Doctor — член команды невиновных, чья цель — лечить своих пациентов.\n\nИспользуйте магазин снаряжения, чтобы купить медпункт или лекарство от parasite, чтобы помогать проводить лечение.'
+            },
+            drunk: {
+                title: 'Drunk',
+                body: 'Роль **Drunk** — это одиночка, который не может точно вспомнить, к какой команде на самом деле принадлежит.\n\nЧерез некоторое время **Drunk** протрезвеет и вспомнит, какая у него роль.\n\nЕсли останется только одна команда, **Drunk** мгновенно протрезвеет и вспомнит, что он член проигравшей команды. Тогда его единственная цель — отомстить за своих павших товарищей.'
+            },
+            oldman: {
+                title: 'Old Man',
+                body: 'Роль Old Man — это одиночка, цель которого — просто выжить до конца раунда.\n\nЕсли Old Man получает достаточно урона, чтобы умереть, у него случается **прилив адреналина**, и он сопротивляется смерти в течение 5 секунд. Когда адреналин заканчивается, он умирает. Этого времени достаточно, чтобы Old Man мог отомстить своему убийце.\n\nВо время прилива адреналина Old Man получает двуствольный дробовик с двумя патронами, чтобы не оставаться безоружным.'
+            },
+            quack: {
+                title: 'Quack',
+                body: 'Роль Quack — член команды предателей, цель которой — подражать Doctor и "лечить" своих пациентов... до смерти.\n\nИспользуй магазин снаряжения, чтобы купить бомбу-станцию или фальшивое лекарство от parasite, чтобы помогать проводить "лечение".'
             }
         };
 
-        // Обработчики для кнопок ролей
+        // Обработчики для всех кнопок ролей
         document.getElementById('roleDetective').addEventListener('click', () => {
             typeRoleDescription('role-detective', roleData.detective.title, roleData.detective.body, 25);
             rolesModal.classList.remove('active');
         });
-
         document.getElementById('roleTraitor').addEventListener('click', () => {
             typeRoleDescription('role-traitor', roleData.traitor.title, roleData.traitor.body, 25);
             rolesModal.classList.remove('active');
         });
-
         document.getElementById('roleInnocent').addEventListener('click', () => {
             typeRoleDescription('role-innocent', roleData.innocent.title, roleData.innocent.body, 25);
+            rolesModal.classList.remove('active');
+        });
+        document.getElementById('roleClown').addEventListener('click', () => {
+            typeRoleDescription('role-clown', roleData.clown.title, roleData.clown.body, 25);
+            rolesModal.classList.remove('active');
+        });
+        document.getElementById('roleDoctor').addEventListener('click', () => {
+            typeRoleDescription('role-doctor', roleData.doctor.title, roleData.doctor.body, 25);
+            rolesModal.classList.remove('active');
+        });
+        document.getElementById('roleDrunk').addEventListener('click', () => {
+            typeRoleDescription('role-drunk', roleData.drunk.title, roleData.drunk.body, 25);
+            rolesModal.classList.remove('active');
+        });
+        document.getElementById('roleOldman').addEventListener('click', () => {
+            typeRoleDescription('role-oldman', roleData.oldman.title, roleData.oldman.body, 25);
+            rolesModal.classList.remove('active');
+        });
+        document.getElementById('roleQuack').addEventListener('click', () => {
+            typeRoleDescription('role-quack', roleData.quack.title, roleData.quack.body, 25);
             rolesModal.classList.remove('active');
         });
     </script>
