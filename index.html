@@ -124,12 +124,14 @@
             color: #cc0000;
             font-size: 1.8em;
             text-transform: uppercase;
+            /* Добавляем свечение */
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #990000;
         }
 
         /* Специальный заголовок для кармы (жёлтый) */
         .karma-header h3 {
             color: #ffaa00;
-            text-shadow: 0 0 10px #ffaa00;
+            text-shadow: 0 0 10px #ffaa00, 0 0 20px #b37400;
         }
 
         .close-btn {
@@ -153,6 +155,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+            margin-bottom: 20px;
         }
 
         .role-button {
@@ -203,12 +206,29 @@
         }
 
         .role-button:hover .role-icon {
-            filter: brightness(0) invert(1); /* делает иконку белой на красном фоне */
+            filter: brightness(0) invert(1); /* белая иконка */
         }
 
         .role-button:active {
             transform: translateY(2px);
             box-shadow: 0 2px 0 #8b0000;
+        }
+
+        /* ===== Блок описания роли внутри модалки ===== */
+        .role-description {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.5);
+            border-left: 3px solid #cc0000;
+            border-radius: 5px;
+            color: #cc0000;
+            font-size: 1.1em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 4em;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         /* ===== Текст управления ===== */
@@ -238,7 +258,7 @@
             white-space: pre-wrap;
         }
 
-        /* ===== Нижняя панель (теперь пустая) ===== */
+        /* ===== Нижняя панель (только дата) ===== */
         .info-text {
             text-align: center;
             color: #aaa;
@@ -251,24 +271,10 @@
         #date {
             color: #cc0000;
             font-weight: bold;
+            text-shadow: 0 0 8px #ff0000;
         }
 
-        #message {
-            text-align: left;
-            color: #cc0000;
-            font-size: 1.2em;
-            min-height: 5em;
-            margin: 15px auto;
-            background: rgba(0,0,0,0.5);
-            padding: 15px;
-            border-radius: 5px;
-            border-left: 3px solid #cc0000;
-            width: 80%;
-            max-width: 600px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: inherit;
-        }
+        /* Больше нет блока #message, так как описание перенесено */
 
         .ttt-footer {
             text-align: center;
@@ -322,7 +328,7 @@
         <button class="main-button" id="showKarma">КАРМА</button>
     </div>
 
-    <!-- Мини-окошко для ролей (только PNG-иконки, без эмодзи) -->
+    <!-- Мини-окошко для ролей (с описанием внутри) -->
     <div id="rolesModal" class="modal">
         <div class="modal-header">
             <h3>Выберите роль</h3>
@@ -358,6 +364,8 @@
                 <img src="images/clown.png" alt="Clown" class="role-icon" onerror="this.style.display='none';"> Clown
             </button>
         </div>
+        <!-- Контейнер для описания выбранной роли -->
+        <div id="roleDescription" class="role-description"></div>
     </div>
 
     <!-- Мини-окошко для управления -->
@@ -390,11 +398,10 @@
         </div>
     </div>
 
-    <!-- Блок с датой и местом для описания (теперь пустой) -->
+    <!-- Блок с датой (описания здесь больше нет) -->
     <div class="info-text">
         Today is <span id="date"></span>
     </div>
-    <div id="message"></div>
 
     <footer class="ttt-footer">
         <p>© 2025 TTT Fan Guide. Not affiliated with Facepunch Studios.</p>
@@ -411,8 +418,8 @@
         const closeRoles = document.getElementById('closeRoles');
         const closeControls = document.getElementById('closeControls');
         const closeKarma = document.getElementById('closeKarma');
-        const messageDiv = document.getElementById('message');
         const dateSpan = document.getElementById('date');
+        const roleDescriptionDiv = document.getElementById('roleDescription');
 
         // Дата
         const today = new Date();
@@ -429,6 +436,8 @@
         function showRolesModal() {
             hideAllModals();
             rolesModal.classList.add('active');
+            // Очищаем описание при открытии окна
+            roleDescriptionDiv.innerHTML = '';
         }
 
         function showControlsModal() {
@@ -455,7 +464,7 @@
             if (e.target === karmaModal) karmaModal.classList.remove('active');
         });
 
-        // Печатающийся текст
+        // Печатающийся текст (теперь в roleDescriptionDiv)
         let typingTimer = null;
 
         function stopTyping() {
@@ -467,15 +476,16 @@
 
         function typeRoleDescription(roleClass, title, body, speed = 25) {
             stopTyping();
-            messageDiv.innerHTML = `<span class="${roleClass}">${title}</span>: `;
+            // Очищаем и начинаем с цветного заголовка
+            roleDescriptionDiv.innerHTML = `<span class="${roleClass}">${title}</span>: `;
             let i = 0;
             typingTimer = setInterval(() => {
                 if (i < body.length) {
                     let char = body.charAt(i);
                     if (char === '\n') {
-                        messageDiv.innerHTML += '<br>';
+                        roleDescriptionDiv.innerHTML += '<br>';
                     } else {
-                        messageDiv.innerHTML += char;
+                        roleDescriptionDiv.innerHTML += char;
                     }
                     i++;
                 } else {
@@ -501,58 +511,51 @@
             },
             clown: {
                 title: 'Clown',
-                body: 'Роль Clown — это шут, цель которого — выжить достаточно долго, чтобы остались только он и одна команда.\n\nКогда команда должна была бы победить, Clown активируется, превращаясь в одиночку, и получает возможность устроить бойню и неожиданно победить.\n\nClown имеет доступ к магазину оружия, но только после активации.'
+                body: 'это шут, цель которого — выжить достаточно долго, чтобы остались только он и одна команда.\n\nКогда команда должна была бы победить, Clown активируется, превращаясь в одиночку, и получает возможность устроить бойню и неожиданно победить.\n\nClown имеет доступ к магазину оружия, но только после активации.'
             },
             doctor: {
                 title: 'Doctor',
-                body: 'Роль Doctor — член команды невиновных, чья цель — лечить своих пациентов.\n\nИспользуйте магазин снаряжения, чтобы купить медпункт или лекарство от parasite, чтобы помогать проводить лечение.'
+                body: 'член команды невиновных, чья цель — лечить своих пациентов.\n\nИспользуйте магазин снаряжения, чтобы купить медпункт или лекарство от parasite, чтобы помогать проводить лечение.'
             },
             drunk: {
                 title: 'Drunk',
-                body: 'Роль Drunk — это одиночка, который не может точно вспомнить, к какой команде на самом деле принадлежит.\n\nЧерез некоторое время Drunk протрезвеет и вспомнит, какая у него роль.\n\nЕсли останется только одна команда, Drunk мгновенно протрезвеет и вспомнит, что он член проигравшей команды. Тогда его единственная цель — отомстить за своих павших товарищей.'
+                body: 'это одиночка, который не может точно вспомнить, к какой команде на самом деле принадлежит.\n\nЧерез некоторое время Drunk протрезвеет и вспомнит, какая у него роль.\n\nЕсли останется только одна команда, Drunk мгновенно протрезвеет и вспомнит, что он член проигравшей команды. Тогда его единственная цель — отомстить за своих павших товарищей.'
             },
             oldman: {
                 title: 'Old Man',
-                body: 'Роль Old Man — это одиночка, цель которого — просто выжить до конца раунда.\n\nЕсли Old Man получает достаточно урона, чтобы умереть, у него случается прилив адреналина, и он сопротивляется смерти в течение 5 секунд. Когда адреналин заканчивается, он умирает. Этого времени достаточно, чтобы Old Man мог отомстить своему убийце.\n\nВо время прилива адреналина Old Man получает двуствольный дробовик с двумя патронами, чтобы не оставаться безоружным.'
+                body: 'это одиночка, цель которого — просто выжить до конца раунда.\n\nЕсли Old Man получает достаточно урона, чтобы умереть, у него случается прилив адреналина, и он сопротивляется смерти в течение 5 секунд. Когда адреналин заканчивается, он умирает. Этого времени достаточно, чтобы Old Man мог отомстить своему убийце.\n\nВо время прилива адреналина Old Man получает двуствольный дробовик с двумя патронами, чтобы не оставаться безоружным.'
             },
             quack: {
                 title: 'Quack',
-                body: 'Роль Quack — член команды предателей, цель которой — подражать Doctor и "лечить" своих пациентов... до смерти.\n\nИспользуй магазин снаряжения, чтобы купить бомбу-станцию или фальшивое лекарство от parasite, чтобы помогать проводить "лечение".'
+                body: 'член команды предателей, цель которой — подражать Doctor и "лечить" своих пациентов... до смерти.\n\nИспользуй магазин снаряжения, чтобы купить бомбу-станцию или фальшивое лекарство от parasite, чтобы помогать проводить "лечение".'
             }
         };
 
         // Обработчики кнопок ролей
         document.getElementById('roleInnocent').addEventListener('click', () => {
             typeRoleDescription('role-innocent', roleData.innocent.title, roleData.innocent.body, 25);
-            rolesModal.classList.remove('active');
+            // Не закрываем окно, чтобы видеть описание
         });
         document.getElementById('roleDoctor').addEventListener('click', () => {
             typeRoleDescription('role-doctor', roleData.doctor.title, roleData.doctor.body, 25);
-            rolesModal.classList.remove('active');
         });
         document.getElementById('roleDetective').addEventListener('click', () => {
             typeRoleDescription('role-detective', roleData.detective.title, roleData.detective.body, 25);
-            rolesModal.classList.remove('active');
         });
         document.getElementById('roleTraitor').addEventListener('click', () => {
             typeRoleDescription('role-traitor', roleData.traitor.title, roleData.traitor.body, 25);
-            rolesModal.classList.remove('active');
         });
         document.getElementById('roleQuack').addEventListener('click', () => {
             typeRoleDescription('role-quack', roleData.quack.title, roleData.quack.body, 25);
-            rolesModal.classList.remove('active');
         });
         document.getElementById('roleDrunk').addEventListener('click', () => {
             typeRoleDescription('role-drunk', roleData.drunk.title, roleData.drunk.body, 25);
-            rolesModal.classList.remove('active');
         });
         document.getElementById('roleOldman').addEventListener('click', () => {
             typeRoleDescription('role-oldman', roleData.oldman.title, roleData.oldman.body, 25);
-            rolesModal.classList.remove('active');
         });
         document.getElementById('roleClown').addEventListener('click', () => {
             typeRoleDescription('role-clown', roleData.clown.title, roleData.clown.body, 25);
-            rolesModal.classList.remove('active');
         });
     </script>
 </body>
