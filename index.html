@@ -3,85 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой простой сайт</title>
+    <title>GMod Menu Style</title>
     <style>
+        /* Стиль в духе Garry's Mod */
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
+            font-family: 'Trebuchet MS', Arial, sans-serif;
+            background: #0a0a0a; /* тёмный фон */
+            background-image: 
+                linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+                linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+                linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            color: #ddd;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        header {
-            background: #50b3a2;
-            color: #fff;
-            padding: 30px 0;
+
+        /* Логотип / шапка */
+        .gmod-header {
             text-align: center;
+            padding: 30px 20px 10px;
+            border-bottom: 2px solid #ffaa00;
+            box-shadow: 0 0 20px rgba(255,170,0,0.3);
+            background: rgba(0,0,0,0.7);
+            margin-bottom: 20px;
         }
-        header h1 {
+
+        .gmod-header h1 {
+            font-size: 4em;
             margin: 0;
-            font-size: 2.5em;
+            color: #ffaa00;
+            text-shadow: 0 0 10px #ffaa00, 0 0 20px #ff8800;
+            letter-spacing: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+        .gmod-header p {
+            font-size: 1.2em;
+            color: #ccc;
+            margin: 5px 0 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        button {
-            display: inline-block;
-            background: #333;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 1em;
-            margin-top: 10px;
+
+        /* Контейнер меню */
+        .menu-container {
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid #444;
+            border-radius: 10px;
+            width: 400px;
+            max-width: 90%;
+            margin: 20px auto;
+            padding: 30px 20px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.7), 0 0 15px #ffaa00 inset;
+            backdrop-filter: blur(2px);
         }
-        button:hover {
-            background: #50b3a2;
-        }
-        footer {
+
+        /* Заголовок внутри меню */
+        .menu-container h2 {
             text-align: center;
-            padding: 20px;
-            background: #333;
-            color: #fff;
-            margin-top: 20px;
+            color: #ffaa00;
+            font-size: 2em;
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            border-bottom: 1px dashed #ffaa00;
+            padding-bottom: 10px;
+        }
+
+        /* Кнопки меню */
+        .menu-button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 15px 0;
+            background: #2a2a2a;
+            border: 2px solid #555;
+            color: #ffaa00;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 0 #111;
+            border-radius: 5px;
+            letter-spacing: 2px;
+        }
+
+        .menu-button:hover {
+            background: #ffaa00;
+            border-color: #ffcc66;
+            color: #111;
+            box-shadow: 0 0 20px #ffaa00, 0 5px 0 #b37400;
+            transform: translateY(-2px);
+        }
+
+        .menu-button:active {
+            transform: translateY(3px);
+            box-shadow: 0 0 15px #ffaa00, 0 2px 0 #b37400;
+        }
+
+        /* Текстовая информация (дата) в стиле GMod */
+        .info-text {
+            text-align: center;
+            color: #aaa;
+            margin: 20px 0 10px;
+            font-size: 1.1em;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        #date {
+            color: #ffaa00;
+            font-weight: bold;
+        }
+
+        #message {
+            text-align: center;
+            color: #ffaa00;
+            font-size: 1.2em;
+            min-height: 1.5em;
+            margin: 15px 0 5px;
+        }
+
+        /* Подвал */
+        .gmod-footer {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0,0,0,0.8);
+            border-top: 2px solid #ffaa00;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: auto;
+        }
+
+        /* Адаптация для мобильных */
+        @media (max-width: 500px) {
+            .gmod-header h1 {
+                font-size: 2.5em;
+            }
+            .menu-button {
+                font-size: 1.2em;
+                padding: 12px;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Добро пожаловать!</h1>
-        <p>Это мой первый сайт на GitHub Pages</p>
+    <header class="gmod-header">
+        <h1>GARRY'S MOD</h1>
+        <p>community menu</p>
     </header>
 
-    <div class="container">
-        <h2>О себе</h2>
-        <p>Привет! Меня зовут [Ваше имя]. Я учусь создавать сайты и размещать их на GitHub.</p>
-        <p>Сегодня <span id="date"></span>. Отличный день, чтобы начать программировать!</p>
-        <button id="clickMe">Нажми меня</button>
-        <p id="message" style="margin-top: 15px; font-weight: bold;"></p>
+    <div class="menu-container">
+        <h2>Main menu</h2>
+        <!-- Кнопки, имитирующие пункты меню GMod -->
+        <button class="menu-button" id="btnSingle">▶ Singleplayer</button>
+        <button class="menu-button" id="btnMulti">🌐 Multiplayer</button>
+        <button class="menu-button" id="btnOptions">⚙️ Options</button>
+        <button class="menu-button" id="btnExit">⏻ Exit</button>
+
+        <!-- Информационный блок с датой (как в прошлой версии) -->
+        <div class="info-text">
+            Today is <span id="date"></span>
+        </div>
+        <div id="message"></div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Мой простой сайт. Все права защищены.</p>
+    <footer class="gmod-footer">
+        <p>&copy; 2025 GMod Fan Site. Not affiliated with Facepunch Studios.</p>
     </footer>
 
     <script>
-        // Отображение текущей даты
+        // Текущая дата
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('date').textContent = today.toLocaleDateString('ru-RU', options);
 
-        // Обработка нажатия на кнопку
-        document.getElementById('clickMe').addEventListener('click', function() {
-            const messageElem = document.getElementById('message');
-            messageElem.textContent = 'Спасибо, что нажали! Приятно познакомиться 🙂';
-        });
+        // Обработчики для кнопок (просто выводят сообщение)
+        function showMessage(text) {
+            document.getElementById('message').textContent = '🔔 ' + text;
+        }
+
+        document.getElementById('btnSingle').addEventListener('click', () => showMessage('Starting singleplayer... have fun!'));
+        document.getElementById('btnMulti').addEventListener('click', () => showMessage('Searching for servers...'));
+        document.getElementById('btnOptions').addEventListener('click', () => showMessage('Options menu - not implemented yet'));
+        document.getElementById('btnExit').addEventListener('click', () => showMessage('Exit? Just close the tab ;)'));
     </script>
 </body>
 </html>
