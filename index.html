@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой простой сайт</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: #50b3a2;
+            color: #fff;
+            padding: 30px 0;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        button {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #50b3a2;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: #fff;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Добро пожаловать!</h1>
+        <p>Это мой первый сайт на GitHub Pages</p>
+    </header>
+
+    <div class="container">
+        <h2>О себе</h2>
+        <p>Привет! Меня зовут [Ваше имя]. Я учусь создавать сайты и размещать их на GitHub.</p>
+        <p>Сегодня <span id="date"></span>. Отличный день, чтобы начать программировать!</p>
+        <button id="clickMe">Нажми меня</button>
+        <p id="message" style="margin-top: 15px; font-weight: bold;"></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Мой простой сайт. Все права защищены.</p>
+    </footer>
+
+    <script>
+        // Отображение текущей даты
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('date').textContent = today.toLocaleDateString('ru-RU', options);
+
+        // Обработка нажатия на кнопку
+        document.getElementById('clickMe').addEventListener('click', function() {
+            const messageElem = document.getElementById('message');
+            messageElem.textContent = 'Спасибо, что нажали! Приятно познакомиться 🙂';
+        });
+    </script>
+</body>
+</html>
