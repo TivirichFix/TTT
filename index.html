@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTT - Trouble in Terrorist Town</title>
     <style>
-        /* Базовые стили */
+        /* Базовые стили (без изменений) */
         body {
             margin: 0;
             padding: 0;
@@ -171,7 +171,7 @@
 
         .role-button:hover {
             background: #cc0000;
-            color: #111 !important; /* при наведении текст становится чёрным */
+            color: #111 !important;
             border-color: #ff6666;
             transform: translateY(-2px);
             box-shadow: 0 6px 0 #8b0000;
@@ -217,10 +217,10 @@
         }
 
         #message {
-            text-align: center;
+            text-align: left;           /* Выравнивание для удобства чтения */
             color: #cc0000;
             font-size: 1.2em;
-            min-height: 3em;
+            min-height: 5em;
             margin: 15px auto;
             background: rgba(0,0,0,0.5);
             padding: 15px;
@@ -230,6 +230,7 @@
             max-width: 600px;
             white-space: pre-wrap;
             word-wrap: break-word;
+            font-family: inherit;
         }
 
         /* Подвал */
@@ -354,7 +355,7 @@
             if (e.target === controlsModal) controlsModal.classList.remove('active');
         });
 
-        // ---- Эффект печатающегося текста (с поддержкой HTML в начале) ----
+        // ---- Эффект печатающегося текста с поддержкой переносов ----
         let typingTimer = null;
 
         function stopTyping() {
@@ -364,16 +365,21 @@
             }
         }
 
-        // Функция печати: сначала устанавливаем заголовок (цветной), затем печатаем остальное
-        function typeDescription(roleClass, roleName, restText, speed = 25) {
+        // Новая функция печати: принимает CSS-класс для заголовка, сам заголовок и текст описания
+        function typeRoleDescription(roleClass, title, body, speed = 25) {
             stopTyping();
-            // Очищаем сообщение и вставляем цветной заголовок
-            messageDiv.innerHTML = `<span class="${roleClass}">${roleName}</span>: `;
+            // Мгновенно выводим цветной заголовок и два переноса строки (как в оригинале)
+            messageDiv.innerHTML = `<span class="${roleClass}">${title}</span><br><br>`;
             let i = 0;
             typingTimer = setInterval(() => {
-                if (i < restText.length) {
-                    // Добавляем по одному символу к существующему HTML
-                    messageDiv.innerHTML += restText.charAt(i);
+                if (i < body.length) {
+                    let char = body.charAt(i);
+                    if (char === '\n') {
+                        // Заменяем перенос строки на HTML-тег <br>
+                        messageDiv.innerHTML += '<br>';
+                    } else {
+                        messageDiv.innerHTML += char;
+                    }
                     i++;
                 } else {
                     clearInterval(typingTimer);
@@ -382,26 +388,35 @@
             }, speed);
         }
 
-        // ---- Описания ролей (без названия в начале) ----
-        const descriptions = {
-            detective: ' может покупать снаряжение в магазине, исследовать тела, использовать радар. Цель — найти и обезвредить предателей. Детектив имеет доступ к уникальному оружию и может вызывать подозрение у невиновных.',
-            traitor: ' имеет доступ к специальному оружию и снаряжению. Может ставить ловушки, отравлять еду, использовать телепортер. Цель — убить всех невиновных и детектива, оставаясь незамеченным.',
-            innocent: ' обычный член команды. Нет особых способностей, кроме обыска тел и покупки оружия в магазине у детектива. Цель — выжить, сотрудничать с детективом и помочь найти предателей.'
+        // ---- Новые описания ролей (в точности как на картинках) ----
+        const roleData = {
+            detective: {
+                title: '# Q Detective',   // Заголовок (будет синим)
+                body: 'Роль Detective — член команды невиновных, чья задача — находить и уничтожать врагов.\n\nДругие игроки узнают, что ты Детектив, просто взглянув на тебя.'
+            },
+            traitor: {
+                title: 'Traitor',         // Заголовок (будет красным)
+                body: 'Роль Traitor — член команды предателей, чья задача — убить всех врагов, как невиновных, так и одиночек.'
+            },
+            innocent: {
+                title: '# Innocent',      // Заголовок (будет зелёным)
+                body: 'Роль Innocent — член команды невиновных, не имеющий особых способностей.'
+            }
         };
 
         // Обработчики для кнопок ролей
         document.getElementById('roleDetective').addEventListener('click', () => {
-            typeDescription('role-detective', 'Детектив', descriptions.detective, 25);
+            typeRoleDescription('role-detective', roleData.detective.title, roleData.detective.body, 25);
             rolesModal.classList.remove('active');
         });
 
         document.getElementById('roleTraitor').addEventListener('click', () => {
-            typeDescription('role-traitor', 'Предатель', descriptions.traitor, 25);
+            typeRoleDescription('role-traitor', roleData.traitor.title, roleData.traitor.body, 25);
             rolesModal.classList.remove('active');
         });
 
         document.getElementById('roleInnocent').addEventListener('click', () => {
-            typeDescription('role-innocent', 'Невиновный', descriptions.innocent, 25);
+            typeRoleDescription('role-innocent', roleData.innocent.title, roleData.innocent.body, 25);
             rolesModal.classList.remove('active');
         });
     </script>
