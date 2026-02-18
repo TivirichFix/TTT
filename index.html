@@ -53,7 +53,7 @@
             letter-spacing: 2px;
         }
 
-        /* Контейнер для основных кнопок */
+        /* Контейнер для основных кнопок (теперь три) */
         .main-menu {
             display: flex;
             justify-content: center;
@@ -127,6 +127,12 @@
             text-transform: uppercase;
         }
 
+        /* Специальный класс для заголовка кармы (жёлтый) */
+        .karma-header h3 {
+            color: #ffaa00;
+            text-shadow: 0 0 10px #ffaa00;
+        }
+
         .close-btn {
             background: none;
             border: none;
@@ -150,7 +156,6 @@
             gap: 10px;
         }
 
-        /* Кнопки ролей с индивидуальными цветами */
         .role-button {
             display: block;
             width: 100%;
@@ -170,15 +175,15 @@
             text-overflow: ellipsis;
         }
 
-        /* Обновлённые цвета согласно заданию */
-        .role-detective { color: #0066ff; }      /* синий */
-        .role-traitor { color: #cc0000; }        /* красный */
-        .role-innocent { color: #00cc00; }       /* зелёный */
-        .role-clown { color: #ff66cc; }          /* розовый */
-        .role-doctor { color: #00cc00; }         /* зелёный (как невиновный) */
-        .role-drunk { color: #8B4513; }          /* коричневый */
-        .role-oldman { color: #8B4513; }         /* коричневый */
-        .role-quack { color: #cc0000; }          /* красный (как предатель) */
+        /* Цвета ролей */
+        .role-detective { color: #0066ff; }
+        .role-traitor { color: #cc0000; }
+        .role-innocent { color: #00cc00; }
+        .role-clown { color: #ff66cc; }
+        .role-doctor { color: #00cc00; }
+        .role-drunk { color: #8B4513; }
+        .role-oldman { color: #8B4513; }
+        .role-quack { color: #cc0000; }
 
         .role-button:hover {
             background: #cc0000;
@@ -212,7 +217,14 @@
             margin-right: 8px;
         }
 
-        /* Информационный блок */
+        /* Текст кармы */
+        .karma-text {
+            color: #ddd;
+            font-size: 1.1em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
         .info-text {
             text-align: center;
             color: #aaa;
@@ -244,7 +256,6 @@
             font-family: inherit;
         }
 
-        /* Подвал */
         .ttt-footer {
             text-align: center;
             padding: 15px;
@@ -255,7 +266,6 @@
             margin-top: auto;
         }
 
-        /* Адаптация для мобильных */
         @media (max-width: 600px) {
             .ttt-header h1 {
                 font-size: 2.2em;
@@ -286,10 +296,11 @@
         <p>role & controls guide</p>
     </header>
 
-    <!-- Две основные кнопки -->
+    <!-- Три основные кнопки -->
     <div class="main-menu">
         <button class="main-button" id="showRoles">РОЛИ</button>
         <button class="main-button" id="showControls">УПРАВЛЕНИЕ</button>
+        <button class="main-button" id="showKarma">КАРМА</button>
     </div>
 
     <!-- Мини-окошко для ролей -->
@@ -299,14 +310,18 @@
             <button class="close-btn" id="closeRoles">&times;</button>
         </div>
         <div class="roles-grid">
-            <button class="role-button role-detective" id="roleDetective">🕵️ Детектив</button>
-            <button class="role-button role-traitor" id="roleTraitor">🗡️ Предатель</button>
-            <button class="role-button role-innocent" id="roleInnocent">👤 Невиновный</button>
-            <button class="role-button role-clown" id="roleClown">🤡 Clown</button>
+            <!-- Невиновные -->
+            <button class="role-button role-innocent" id="roleInnocent">👤 Innocent</button>
             <button class="role-button role-doctor" id="roleDoctor">💊 Doctor</button>
+            <!-- Детектив -->
+            <button class="role-button role-detective" id="roleDetective">🕵️ Detective</button>
+            <!-- Предатели -->
+            <button class="role-button role-traitor" id="roleTraitor">🗡️ Traitor</button>
+            <button class="role-button role-quack" id="roleQuack">🦆 Quack</button>
+            <!-- Одиночки -->
             <button class="role-button role-drunk" id="roleDrunk">🍺 Drunk</button>
             <button class="role-button role-oldman" id="roleOldman">👴 Old Man</button>
-            <button class="role-button role-quack" id="roleQuack">🦆 Quack</button>
+            <button class="role-button role-clown" id="roleClown">🤡 Clown</button>
         </div>
     </div>
 
@@ -326,6 +341,20 @@
         </div>
     </div>
 
+    <!-- Мини-окошко для кармы (жёлтый заголовок) -->
+    <div id="karmaModal" class="modal">
+        <div class="modal-header karma-header">
+            <h3>Карма</h3>
+            <button class="close-btn" id="closeKarma">&times;</button>
+        </div>
+        <div class="karma-text">
+            Ваша Карма начинается с 1000 и уменьшается, если вы наносите урон игрокам своей команды. Урон карме меньше, если их карма ниже.<br><br>
+            Если в начале раунда у вас низкая карма, вы получаете штраф к урону от оружия в этом раунде.<br><br>
+            Играя чистые раунды, в которых вы не вредите товарищам, вы восстанавливаете карму. Некоторые роли также получают карму за урон врагам.<br><br>
+            Значение кармы, отображаемое в таблице счёта, обновляется только после окончания раунда. Во время раунда истинная карма игрока может быть ниже.
+        </div>
+    </div>
+
     <!-- Блок с датой и местом для описания -->
     <div class="info-text">
         Today is <span id="date"></span>
@@ -337,25 +366,29 @@
     </footer>
 
     <script>
-        // ---- Элементы DOM ----
+        // Элементы DOM
         const rolesModal = document.getElementById('rolesModal');
         const controlsModal = document.getElementById('controlsModal');
+        const karmaModal = document.getElementById('karmaModal');
         const showRolesBtn = document.getElementById('showRoles');
         const showControlsBtn = document.getElementById('showControls');
+        const showKarmaBtn = document.getElementById('showKarma');
         const closeRoles = document.getElementById('closeRoles');
         const closeControls = document.getElementById('closeControls');
+        const closeKarma = document.getElementById('closeKarma');
         const messageDiv = document.getElementById('message');
         const dateSpan = document.getElementById('date');
 
-        // ---- Дата ----
+        // Дата
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         dateSpan.textContent = today.toLocaleDateString('ru-RU', options);
 
-        // ---- Функции для модалок ----
+        // Функции для модалок
         function hideAllModals() {
             rolesModal.classList.remove('active');
             controlsModal.classList.remove('active');
+            karmaModal.classList.remove('active');
         }
 
         function showRolesModal() {
@@ -368,21 +401,29 @@
             controlsModal.classList.add('active');
         }
 
+        function showKarmaModal() {
+            hideAllModals();
+            karmaModal.classList.add('active');
+        }
+
         // Открытие по кнопкам
         showRolesBtn.addEventListener('click', showRolesModal);
         showControlsBtn.addEventListener('click', showControlsModal);
+        showKarmaBtn.addEventListener('click', showKarmaModal);
 
         // Закрытие по крестикам
         closeRoles.addEventListener('click', () => rolesModal.classList.remove('active'));
         closeControls.addEventListener('click', () => controlsModal.classList.remove('active'));
+        closeKarma.addEventListener('click', () => karmaModal.classList.remove('active'));
 
         // Закрытие при клике вне окна
         window.addEventListener('click', (e) => {
             if (e.target === rolesModal) rolesModal.classList.remove('active');
             if (e.target === controlsModal) controlsModal.classList.remove('active');
+            if (e.target === karmaModal) karmaModal.classList.remove('active');
         });
 
-        // ---- Эффект печатающегося текста ----
+        // Печатающийся текст для ролей (без изменений)
         let typingTimer = null;
 
         function stopTyping() {
@@ -394,7 +435,6 @@
 
         function typeRoleDescription(roleClass, title, body, speed = 25) {
             stopTyping();
-            // Цветной заголовок и двоеточие
             messageDiv.innerHTML = `<span class="${roleClass}">${title}</span>: `;
             let i = 0;
             typingTimer = setInterval(() => {
@@ -413,7 +453,7 @@
             }, speed);
         }
 
-        // ---- Описания ролей ----
+        // Данные ролей
         const roleData = {
             detective: {
                 title: 'Detective',
@@ -449,7 +489,15 @@
             }
         };
 
-        // Обработчики для всех кнопок ролей
+        // Обработчики кнопок ролей
+        document.getElementById('roleInnocent').addEventListener('click', () => {
+            typeRoleDescription('role-innocent', roleData.innocent.title, roleData.innocent.body, 25);
+            rolesModal.classList.remove('active');
+        });
+        document.getElementById('roleDoctor').addEventListener('click', () => {
+            typeRoleDescription('role-doctor', roleData.doctor.title, roleData.doctor.body, 25);
+            rolesModal.classList.remove('active');
+        });
         document.getElementById('roleDetective').addEventListener('click', () => {
             typeRoleDescription('role-detective', roleData.detective.title, roleData.detective.body, 25);
             rolesModal.classList.remove('active');
@@ -458,16 +506,8 @@
             typeRoleDescription('role-traitor', roleData.traitor.title, roleData.traitor.body, 25);
             rolesModal.classList.remove('active');
         });
-        document.getElementById('roleInnocent').addEventListener('click', () => {
-            typeRoleDescription('role-innocent', roleData.innocent.title, roleData.innocent.body, 25);
-            rolesModal.classList.remove('active');
-        });
-        document.getElementById('roleClown').addEventListener('click', () => {
-            typeRoleDescription('role-clown', roleData.clown.title, roleData.clown.body, 25);
-            rolesModal.classList.remove('active');
-        });
-        document.getElementById('roleDoctor').addEventListener('click', () => {
-            typeRoleDescription('role-doctor', roleData.doctor.title, roleData.doctor.body, 25);
+        document.getElementById('roleQuack').addEventListener('click', () => {
+            typeRoleDescription('role-quack', roleData.quack.title, roleData.quack.body, 25);
             rolesModal.classList.remove('active');
         });
         document.getElementById('roleDrunk').addEventListener('click', () => {
@@ -478,8 +518,8 @@
             typeRoleDescription('role-oldman', roleData.oldman.title, roleData.oldman.body, 25);
             rolesModal.classList.remove('active');
         });
-        document.getElementById('roleQuack').addEventListener('click', () => {
-            typeRoleDescription('role-quack', roleData.quack.title, roleData.quack.body, 25);
+        document.getElementById('roleClown').addEventListener('click', () => {
+            typeRoleDescription('role-clown', roleData.clown.title, roleData.clown.body, 25);
             rolesModal.classList.remove('active');
         });
     </script>
