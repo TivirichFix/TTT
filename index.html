@@ -93,7 +93,7 @@
         /* Модальные окна (мини-окошки) */
         .modal {
             display: none; /* скрыты по умолчанию */
-            width: 350px;
+            width: 400px;
             max-width: 90%;
             background: rgba(20, 20, 20, 0.95);
             border: 2px solid #cc0000;
@@ -173,20 +173,23 @@
             box-shadow: 0 2px 0 #8b0000;
         }
 
-        /* Текст управления */
-        .controls-list {
+        /* Текст управления - обновлённый список */
+        .controls-list p {
             color: #ddd;
-            font-size: 1.2em;
-            line-height: 1.8;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin: 10px 0;
         }
 
         .controls-list kbd {
             background: #333;
             border: 1px solid #cc0000;
             color: #ffaaaa;
-            padding: 3px 6px;
+            padding: 3px 8px;
             border-radius: 4px;
             font-family: monospace;
+            font-weight: bold;
+            margin-right: 8px;
         }
 
         /* Информационный блок с датой и описанием */
@@ -270,22 +273,19 @@
         <button class="role-button" id="roleInnocent">👤 Невиновный</button>
     </div>
 
-    <!-- Мини-окошко для управления -->
+    <!-- Мини-окошко для управления (ОБНОВЛЕНО) -->
     <div id="controlsModal" class="modal">
         <div class="modal-header">
             <h3>Управление</h3>
             <button class="close-btn" id="closeControls">&times;</button>
         </div>
         <div class="controls-list">
-            <p><kbd>W A S D</kbd> — перемещение</p>
-            <p><kbd>E</kbd> — обыск / использование</p>
-            <p><kbd>R</kbd> — перезарядка</p>
-            <p><kbd>Q</kbd> — быстрое меню покупки (детектив/предатель)</p>
-            <p><kbd>F</kbd> — фонарик</p>
-            <p><kbd>TAB</kbd> — список игроков</p>
-            <p><kbd>C</kbd> — открыть магазин (детектив/предатель)</p>
-            <p><kbd>ЛКМ</kbd> — стрельба</p>
-            <p><kbd>ПКМ</kbd> — прицеливание / специальное действие</p>
+            <p><kbd>Q</kbd> позволяет выбросить ваше оружие, чтобы подобрать другое.</p>
+            <p><kbd>C</kbd> открывает меню снаряжения, если у вашей роли оно есть.</p>
+            <p><kbd>B</kbd> — отправлять голосовые сообщения только предателям (Suit Zoom).</p>
+            <p><kbd>F1</kbd> показывает это меню (Помощь и настройки).</p>
+            <p><kbd>N</kbd> открывает меню радиокоманд.</p>
+            <p><kbd>SHIFT</kbd> позволяет вам бежать, пока есть выносливость.</p>
         </div>
     </div>
 
@@ -339,7 +339,7 @@
         closeRoles.addEventListener('click', () => rolesModal.classList.remove('active'));
         closeControls.addEventListener('click', () => controlsModal.classList.remove('active'));
 
-        // Закрытие при клике вне окна (необязательно, но удобно)
+        // Закрытие при клике вне окна
         window.addEventListener('click', (e) => {
             if (e.target === rolesModal) rolesModal.classList.remove('active');
             if (e.target === controlsModal) controlsModal.classList.remove('active');
@@ -357,8 +357,8 @@
         }
 
         function typeText(text, element, speed = 30) {
-            stopTyping(); // останавливаем предыдущий набор
-            element.textContent = ''; // очищаем
+            stopTyping();
+            element.textContent = '';
             let i = 0;
             typingTimer = setInterval(() => {
                 if (i < text.length) {
@@ -381,7 +381,7 @@
         // Обработчики для кнопок ролей
         document.getElementById('roleDetective').addEventListener('click', () => {
             typeText(descriptions.detective, messageDiv, 25);
-            rolesModal.classList.remove('active'); // закрываем окно после выбора
+            rolesModal.classList.remove('active');
         });
 
         document.getElementById('roleTraitor').addEventListener('click', () => {
@@ -393,9 +393,6 @@
             typeText(descriptions.innocent, messageDiv, 25);
             rolesModal.classList.remove('active');
         });
-
-        // При клике на кнопку управления окно остаётся открытым, пока не закроют крестиком.
-        // Можно также добавить предупреждение, что это просто список.
     </script>
 </body>
 </html>
