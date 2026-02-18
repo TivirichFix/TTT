@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTT - Trouble in Terrorist Town</title>
     <style>
-        /* Базовые стили */
+        /* ===== Базовые стили (без изменений) ===== */
         body {
             margin: 0;
             padding: 0;
@@ -24,7 +24,6 @@
             flex-direction: column;
         }
 
-        /* Шапка с красным заголовком */
         .ttt-header {
             text-align: center;
             padding: 30px 20px 10px;
@@ -53,7 +52,7 @@
             letter-spacing: 2px;
         }
 
-        /* Контейнер для основных кнопок (теперь три) */
+        /* ===== Кнопки главного меню ===== */
         .main-menu {
             display: flex;
             justify-content: center;
@@ -90,7 +89,7 @@
             box-shadow: 0 6px 0 #8b0000, 0 0 30px #ff0000;
         }
 
-        /* Модальные окна */
+        /* ===== Модальные окна ===== */
         .modal {
             display: none;
             width: 500px;
@@ -127,7 +126,7 @@
             text-transform: uppercase;
         }
 
-        /* Специальный класс для заголовка кармы (жёлтый) */
+        /* Специальный заголовок для кармы (жёлтый) */
         .karma-header h3 {
             color: #ffaa00;
             text-shadow: 0 0 10px #ffaa00;
@@ -149,7 +148,7 @@
             transform: scale(1.2);
         }
 
-        /* Сетка для кнопок ролей */
+        /* ===== Сетка кнопок ролей ===== */
         .roles-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -157,7 +156,9 @@
         }
 
         .role-button {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             width: 100%;
             padding: 12px 10px;
             background: #2a2a2a;
@@ -175,7 +176,15 @@
             text-overflow: ellipsis;
         }
 
-        /* Цвета ролей */
+        /* Иконки внутри кнопок */
+        .role-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        /* Цвета текста ролей */
         .role-detective { color: #0066ff; }
         .role-traitor { color: #cc0000; }
         .role-innocent { color: #00cc00; }
@@ -193,12 +202,16 @@
             box-shadow: 0 6px 0 #8b0000;
         }
 
+        .role-button:hover .role-icon {
+            filter: brightness(0) invert(1); /* делает иконку белой на красном фоне */
+        }
+
         .role-button:active {
             transform: translateY(2px);
             box-shadow: 0 2px 0 #8b0000;
         }
 
-        /* Текст управления */
+        /* ===== Текст управления ===== */
         .controls-list p {
             color: #ddd;
             font-size: 1.1em;
@@ -217,7 +230,7 @@
             margin-right: 8px;
         }
 
-        /* Текст кармы */
+        /* ===== Текст кармы ===== */
         .karma-text {
             color: #ddd;
             font-size: 1.1em;
@@ -225,6 +238,7 @@
             white-space: pre-wrap;
         }
 
+        /* ===== Нижняя панель ===== */
         .info-text {
             text-align: center;
             color: #aaa;
@@ -266,6 +280,7 @@
             margin-top: auto;
         }
 
+        /* ===== Адаптация ===== */
         @media (max-width: 600px) {
             .ttt-header h1 {
                 font-size: 2.2em;
@@ -287,6 +302,10 @@
                 padding: 12px;
                 white-space: normal;
             }
+            .role-icon {
+                width: 28px;
+                height: 28px;
+            }
         }
     </style>
 </head>
@@ -303,7 +322,7 @@
         <button class="main-button" id="showKarma">КАРМА</button>
     </div>
 
-    <!-- Мини-окошко для ролей -->
+    <!-- Мини-окошко для ролей (с PNG-иконками) -->
     <div id="rolesModal" class="modal">
         <div class="modal-header">
             <h3>Выберите роль</h3>
@@ -311,21 +330,45 @@
         </div>
         <div class="roles-grid">
             <!-- Невиновные -->
-            <button class="role-button role-innocent" id="roleInnocent">👤 Innocent</button>
-            <button class="role-button role-doctor" id="roleDoctor">💊 Doctor</button>
+            <button class="role-button role-innocent" id="roleInnocent">
+                <img src="images/innocent.png" alt="Innocent" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
+                <span>👤</span> Innocent
+            </button>
+            <button class="role-button role-doctor" id="roleDoctor">
+                <img src="images/doctor.png" alt="Doctor" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
+                <span>💊</span> Doctor
+            </button>
             <!-- Детектив -->
-            <button class="role-button role-detective" id="roleDetective">🕵️ Detective</button>
+            <button class="role-button role-detective" id="roleDetective">
+                <img src="images/detective.png" alt="Detective" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
+                <span>🕵️</span> Detective
+            </button>
             <!-- Предатели -->
-            <button class="role-button role-traitor" id="roleTraitor">🗡️ Traitor</button>
-            <button class="role-button role-quack" id="roleQuack">🦆 Quack</button>
+            <button class="role-button role-traitor" id="roleTraitor">
+                <img src="images/traitor.png" alt="Traitor" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
+                <span>🗡️</span> Traitor
+            </button>
+            <button class="role-button role-quack" id="roleQuack">
+                <img src="images/quack.png" alt="Quack" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
+                <span>🦆</span> Quack
+            </button>
             <!-- Одиночки -->
-            <button class="role-button role-drunk" id="roleDrunk">🍺 Drunk</button>
-            <button class="role-button role-oldman" id="roleOldman">👴 Old Man</button>
-            <button class="role-button role-clown" id="roleClown">🤡 Clown</button>
+            <button class="role-button role-drunk" id="roleDrunk">
+                <img src="images/drunk.png" alt="Drunk" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
+                <span>🍺</span> Drunk
+            </button>
+            <button class="role-button role-oldman" id="roleOldman">
+                <img src="images/oldman.png" alt="Old Man" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
+                <span>👴</span> Old Man
+            </button>
+            <button class="role-button role-clown" id="roleClown">
+                <img src="images/clown.png" alt="Clown" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
+                <span>🤡</span> Clown
+            </button>
         </div>
     </div>
 
-    <!-- Мини-окошко для управления -->
+    <!-- Мини-окошко для управления (без изменений) -->
     <div id="controlsModal" class="modal">
         <div class="modal-header">
             <h3>Управление</h3>
@@ -341,7 +384,7 @@
         </div>
     </div>
 
-    <!-- Мини-окошко для кармы (жёлтый заголовок) -->
+    <!-- Мини-окошко для кармы -->
     <div id="karmaModal" class="modal">
         <div class="modal-header karma-header">
             <h3>Карма</h3>
@@ -384,7 +427,7 @@
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         dateSpan.textContent = today.toLocaleDateString('ru-RU', options);
 
-        // Функции для модалок
+        // Управление модальными окнами
         function hideAllModals() {
             rolesModal.classList.remove('active');
             controlsModal.classList.remove('active');
@@ -406,24 +449,21 @@
             karmaModal.classList.add('active');
         }
 
-        // Открытие по кнопкам
         showRolesBtn.addEventListener('click', showRolesModal);
         showControlsBtn.addEventListener('click', showControlsModal);
         showKarmaBtn.addEventListener('click', showKarmaModal);
 
-        // Закрытие по крестикам
         closeRoles.addEventListener('click', () => rolesModal.classList.remove('active'));
         closeControls.addEventListener('click', () => controlsModal.classList.remove('active'));
         closeKarma.addEventListener('click', () => karmaModal.classList.remove('active'));
 
-        // Закрытие при клике вне окна
         window.addEventListener('click', (e) => {
             if (e.target === rolesModal) rolesModal.classList.remove('active');
             if (e.target === controlsModal) controlsModal.classList.remove('active');
             if (e.target === karmaModal) karmaModal.classList.remove('active');
         });
 
-        // Печатающийся текст для ролей (без изменений)
+        // Печатающийся текст
         let typingTimer = null;
 
         function stopTyping() {
@@ -453,7 +493,7 @@
             }, speed);
         }
 
-        // Данные ролей
+        // Описания ролей (без звёздочек)
         const roleData = {
             detective: {
                 title: 'Detective',
@@ -469,7 +509,7 @@
             },
             clown: {
                 title: 'Clown',
-                body: 'Роль Clown — это **шут**, цель которого — выжить достаточно долго, чтобы остались только он и одна команда.\n\nКогда команда должна была бы победить, Clown активируется, превращаясь в одиночку, и получает возможность устроить бойню и неожиданно победить.\n\nClown имеет доступ к магазину оружия, но только после активации.'
+                body: 'Роль Clown — это шут, цель которого — выжить достаточно долго, чтобы остались только он и одна команда.\n\nКогда команда должна была бы победить, Clown активируется, превращаясь в одиночку, и получает возможность устроить бойню и неожиданно победить.\n\nClown имеет доступ к магазину оружия, но только после активации.'
             },
             doctor: {
                 title: 'Doctor',
@@ -477,11 +517,11 @@
             },
             drunk: {
                 title: 'Drunk',
-                body: 'Роль **Drunk** — это одиночка, который не может точно вспомнить, к какой команде на самом деле принадлежит.\n\nЧерез некоторое время **Drunk** протрезвеет и вспомнит, какая у него роль.\n\nЕсли останется только одна команда, **Drunk** мгновенно протрезвеет и вспомнит, что он член проигравшей команды. Тогда его единственная цель — отомстить за своих павших товарищей.'
+                body: 'Роль Drunk — это одиночка, который не может точно вспомнить, к какой команде на самом деле принадлежит.\n\nЧерез некоторое время Drunk протрезвеет и вспомнит, какая у него роль.\n\nЕсли останется только одна команда, Drunk мгновенно протрезвеет и вспомнит, что он член проигравшей команды. Тогда его единственная цель — отомстить за своих павших товарищей.'
             },
             oldman: {
                 title: 'Old Man',
-                body: 'Роль Old Man — это одиночка, цель которого — просто выжить до конца раунда.\n\nЕсли Old Man получает достаточно урона, чтобы умереть, у него случается **прилив адреналина**, и он сопротивляется смерти в течение 5 секунд. Когда адреналин заканчивается, он умирает. Этого времени достаточно, чтобы Old Man мог отомстить своему убийце.\n\nВо время прилива адреналина Old Man получает двуствольный дробовик с двумя патронами, чтобы не оставаться безоружным.'
+                body: 'Роль Old Man — это одиночка, цель которого — просто выжить до конца раунда.\n\nЕсли Old Man получает достаточно урона, чтобы умереть, у него случается прилив адреналина, и он сопротивляется смерти в течение 5 секунд. Когда адреналин заканчивается, он умирает. Этого времени достаточно, чтобы Old Man мог отомстить своему убийце.\n\nВо время прилива адреналина Old Man получает двуствольный дробовик с двумя патронами, чтобы не оставаться безоружным.'
             },
             quack: {
                 title: 'Quack',
