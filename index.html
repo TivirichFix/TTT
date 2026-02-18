@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTT - Trouble in Terrorist Town</title>
     <style>
-        /* ===== Базовые стили (без изменений) ===== */
+        /* ===== Базовые стили ===== */
         body {
             margin: 0;
             padding: 0;
@@ -238,7 +238,7 @@
             white-space: pre-wrap;
         }
 
-        /* ===== Нижняя панель ===== */
+        /* ===== Нижняя панель (теперь пустая) ===== */
         .info-text {
             text-align: center;
             color: #aaa;
@@ -322,7 +322,7 @@
         <button class="main-button" id="showKarma">КАРМА</button>
     </div>
 
-    <!-- Мини-окошко для ролей (с PNG-иконками) -->
+    <!-- Мини-окошко для ролей (только PNG-иконки, без эмодзи) -->
     <div id="rolesModal" class="modal">
         <div class="modal-header">
             <h3>Выберите роль</h3>
@@ -331,44 +331,36 @@
         <div class="roles-grid">
             <!-- Невиновные -->
             <button class="role-button role-innocent" id="roleInnocent">
-                <img src="images/innocent.png" alt="Innocent" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
-                <span>👤</span> Innocent
+                <img src="images/innocent.png" alt="Innocent" class="role-icon" onerror="this.style.display='none';"> Innocent
             </button>
             <button class="role-button role-doctor" id="roleDoctor">
-                <img src="images/doctor.png" alt="Doctor" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
-                <span>💊</span> Doctor
+                <img src="images/doctor.png" alt="Doctor" class="role-icon" onerror="this.style.display='none';"> Doctor
             </button>
             <!-- Детектив -->
             <button class="role-button role-detective" id="roleDetective">
-                <img src="images/detective.png" alt="Detective" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
-                <span>🕵️</span> Detective
+                <img src="images/detective.png" alt="Detective" class="role-icon" onerror="this.style.display='none';"> Detective
             </button>
             <!-- Предатели -->
             <button class="role-button role-traitor" id="roleTraitor">
-                <img src="images/traitor.png" alt="Traitor" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
-                <span>🗡️</span> Traitor
+                <img src="images/traitor.png" alt="Traitor" class="role-icon" onerror="this.style.display='none';"> Traitor
             </button>
             <button class="role-button role-quack" id="roleQuack">
-                <img src="images/quack.png" alt="Quack" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
-                <span>🦆</span> Quack
+                <img src="images/quack.png" alt="Quack" class="role-icon" onerror="this.style.display='none';"> Quack
             </button>
             <!-- Одиночки -->
             <button class="role-button role-drunk" id="roleDrunk">
-                <img src="images/drunk.png" alt="Drunk" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
-                <span>🍺</span> Drunk
+                <img src="images/drunk.png" alt="Drunk" class="role-icon" onerror="this.style.display='none';"> Drunk
             </button>
             <button class="role-button role-oldman" id="roleOldman">
-                <img src="images/oldman.png" alt="Old Man" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
-                <span>👴</span> Old Man
+                <img src="images/oldman.png" alt="Old Man" class="role-icon" onerror="this.style.display='none';"> Old Man
             </button>
             <button class="role-button role-clown" id="roleClown">
-                <img src="images/clown.png" alt="Clown" class="role-icon" onerror="this.style.display='none'; this.nextSibling.style.display='inline';"> 
-                <span>🤡</span> Clown
+                <img src="images/clown.png" alt="Clown" class="role-icon" onerror="this.style.display='none';"> Clown
             </button>
         </div>
     </div>
 
-    <!-- Мини-окошко для управления (без изменений) -->
+    <!-- Мини-окошко для управления -->
     <div id="controlsModal" class="modal">
         <div class="modal-header">
             <h3>Управление</h3>
@@ -398,11 +390,11 @@
         </div>
     </div>
 
-    <!-- Блок с датой и местом для описания -->
+    <!-- Блок с датой и местом для описания (теперь пустой) -->
     <div class="info-text">
         Today is <span id="date"></span>
     </div>
-    <div id="message">Нажми на кнопку "Роли" и выбери роль, чтобы увидеть описание</div>
+    <div id="message"></div>
 
     <footer class="ttt-footer">
         <p>© 2025 TTT Fan Guide. Not affiliated with Facepunch Studios.</p>
