@@ -5,23 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTT - Trouble in Terrorist Town</title>
     <style>
-        /* ===== Базовые стили ===== */
+        /* ===== Слайд-шоу фон ===== */
+        .slideshow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2; /* ниже всего */
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(5px); /* лёгкое размытие */
+            transition: opacity 2s ease-in-out;
+            opacity: 0;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        /* ===== Основные стили ===== */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Trebuchet MS', Arial, sans-serif;
-            background: #0a0a0a;
-            background-image: 
-                linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
-                linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
-                linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
             color: #ddd;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background: transparent; /* фон теперь в слайд-шоу */
         }
 
         .ttt-header {
@@ -44,8 +65,7 @@
             line-height: 1.2;
         }
 
-        /* Стиль для пасхалки */
-        #easterEgg {
+        #rainTrigger, #easterEgg {
             cursor: pointer;
             display: inline-block;
         }
@@ -206,7 +226,6 @@
             filter: drop-shadow(0 0 5px currentColor);
         }
 
-        /* Цвета текста ролей */
         .role-detective { color: #0066ff; }
         .role-traitor { color: #cc0000; }
         .role-innocent { color: #00cc00; }
@@ -329,10 +348,39 @@
             background: #1a1a1a;
         }
 
-        /* Для Firefox */
         * {
             scrollbar-width: thin;
             scrollbar-color: #cc0000 #1a1a1a;
+        }
+
+        /* ===== Контейнер для дождя ===== */
+        #rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .rain-item {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-image: url('images/traitor.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
         }
 
         /* ===== Адаптация ===== */
@@ -365,13 +413,25 @@
                 font-size: 1em;
                 padding: 10px;
             }
+            .rain-item {
+                width: 30px;
+                height: 30px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Контейнер слайд-шоу -->
+    <div class="slideshow">
+        <div class="slide active" id="slide1"></div>
+        <div class="slide" id="slide2"></div>
+    </div>
+
+    <!-- Контейнер для дождя -->
+    <div id="rain-container"></div>
+
     <header class="ttt-header">
-        <!-- В слове TOWN первая буква T обёрнута в span для пасхалки -->
-        <h1>TROUBLE IN TERRORIST <span id="easterEgg">T</span>OWN</h1>
+        <h1><span id="rainTrigger">T</span>ROUBLE IN TERRORIST <span id="easterEgg">T</span>OWN</h1>
         <p>role & controls guide</p>
         <div class="warning-message">
             ⚠️ ПРОШУ не закрывайте данное окно и прочитайте все 3 статьи для более приятной игры
@@ -459,13 +519,13 @@
         Today is <span id="date"></span>
     </div>
 
-    <!-- Подвал (здесь будет пасхалка) -->
+    <!-- Подвал -->
     <footer class="ttt-footer">
         <p>© 2025 TTT Fan Guide. Not affiliated with Facepunch Studios.</p>
     </footer>
 
     <script>
-        // Элементы DOM
+        // Элементы DOM (те же, что и раньше)
         const rolesModal = document.getElementById('rolesModal');
         const controlsModal = document.getElementById('controlsModal');
         const karmaModal = document.getElementById('karmaModal');
@@ -478,13 +538,14 @@
         const dateSpan = document.getElementById('date');
         const roleDescriptionDiv = document.getElementById('roleDescription');
         const footerText = document.querySelector('.ttt-footer p');
+        const rainContainer = document.getElementById('rain-container');
 
         // Дата
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         dateSpan.textContent = today.toLocaleDateString('ru-RU', options);
 
-        // Управление модальными окнами
+        // Модальные окна (без изменений)
         function hideAllModals() {
             rolesModal.classList.remove('active');
             controlsModal.classList.remove('active');
@@ -521,7 +582,7 @@
             if (e.target === karmaModal) karmaModal.classList.remove('active');
         });
 
-        // Печатающийся текст
+        // Печатающийся текст (без изменений)
         let typingTimer = null;
 
         function stopTyping() {
@@ -551,7 +612,7 @@
             }, speed);
         }
 
-        // Описания ролей
+        // Данные ролей (без изменений)
         const roleData = {
             detective: {
                 title: 'Detective',
@@ -613,10 +674,80 @@
             typeRoleDescription('role-clown', roleData.clown.title, roleData.clown.body, 25);
         });
 
-        // ===== ПАСХАЛКА =====
+        // ===== ПАСХАЛКА 1 =====
         document.getElementById('easterEgg').addEventListener('click', function() {
             footerText.textContent = 'tttneverdieslamt';
         });
+
+        // ===== ПАСХАЛКА 2 =====
+        function createRain() {
+            const count = 30;
+            for (let i = 0; i < count; i++) {
+                const rainItem = document.createElement('div');
+                rainItem.className = 'rain-item';
+                const left = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = 3 + Math.random() * 4;
+                const size = 30 + Math.floor(Math.random() * 30);
+                
+                rainItem.style.left = left + '%';
+                rainItem.style.animationDelay = delay + 's';
+                rainItem.style.animationDuration = duration + 's';
+                rainItem.style.width = size + 'px';
+                rainItem.style.height = size + 'px';
+                
+                rainContainer.appendChild(rainItem);
+
+                setTimeout(() => {
+                    rainItem.remove();
+                }, (delay + duration) * 1000);
+            }
+        }
+
+        document.getElementById('rainTrigger').addEventListener('click', createRain);
+
+        // ===== СЛАЙД-ШОУ ФОНА =====
+        const slide1 = document.getElementById('slide1');
+        const slide2 = document.getElementById('slide2');
+        const slides = [slide1, slide2];
+
+        // Массив путей к фоновым изображениям (измените расширение, если нужно)
+        const backgrounds = [
+            'images/background_01.jpg',
+            'images/background_02.jpg',
+            'images/background_03.jpg',
+            'images/background_04.jpg',
+            'images/background_05.jpg'
+        ];
+
+        let activeIndex = 0; // индекс активного слайда (0 или 1)
+        let currentBgIndex = 0; // индекс текущего изображения в массиве backgrounds
+
+        // Инициализация: первому слайду ставим первый фон, второму — второй фон, делаем первый активным
+        slide1.style.backgroundImage = `url('${backgrounds[0]}')`;
+        slide2.style.backgroundImage = `url('${backgrounds[1]}')`;
+        slide1.classList.add('active');
+        slide2.classList.remove('active');
+        currentBgIndex = 1; // следующее изображение для второго слайда
+
+        // Функция переключения фона
+        function switchBackground() {
+            // Определяем следующий индекс изображения
+            const nextBgIndex = (currentBgIndex + 1) % backgrounds.length;
+            // Находим неактивный слайд
+            const nextSlide = slides[activeIndex === 0 ? 1 : 0];
+            // Устанавливаем ему следующий фон
+            nextSlide.style.backgroundImage = `url('${backgrounds[nextBgIndex]}')`;
+            // Переключаем класс active
+            slides[activeIndex].classList.remove('active');
+            nextSlide.classList.add('active');
+            // Обновляем индексы
+            activeIndex = activeIndex === 0 ? 1 : 0;
+            currentBgIndex = nextBgIndex;
+        }
+
+        // Запускаем интервал смены каждые 15 секунд
+        setInterval(switchBackground, 15000);
     </script>
 </body>
 </html>
