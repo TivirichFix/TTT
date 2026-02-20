@@ -44,6 +44,12 @@
             line-height: 1.2;
         }
 
+        /* Стиль для пасхалки */
+        #easterEgg {
+            cursor: pointer;
+            display: inline-block;
+        }
+
         .ttt-header p {
             font-size: 1.2em;
             color: #ccc;
@@ -52,7 +58,6 @@
             letter-spacing: 2px;
         }
 
-        /* Новое сообщение-предупреждение */
         .warning-message {
             font-size: 1.2em;
             color: #ffaaaa;
@@ -272,7 +277,7 @@
             white-space: pre-wrap;
         }
 
-        /* ===== Нижняя панель (только дата) ===== */
+        /* ===== Нижняя панель (дата) ===== */
         .info-text {
             text-align: center;
             color: #aaa;
@@ -296,9 +301,10 @@
             color: #888;
             font-size: 0.9em;
             margin-top: auto;
+            transition: color 0.3s;
         }
 
-        /* ===== Стилизация скроллбара (КРАСНЫЙ) ===== */
+        /* ===== Стилизация скроллбара ===== */
         ::-webkit-scrollbar {
             width: 12px;
             height: 12px;
@@ -364,9 +370,9 @@
 </head>
 <body>
     <header class="ttt-header">
-        <h1>TROUBLE IN TERRORIST TOWN</h1>
+        <!-- В слове TOWN первая буква T обёрнута в span для пасхалки -->
+        <h1>TROUBLE IN TERRORIST <span id="easterEgg">T</span>OWN</h1>
         <p>role & controls guide</p>
-        <!-- Добавленное предупреждение -->
         <div class="warning-message">
             ⚠️ ПРОШУ не закрывайте данное окно и прочитайте все 3 статьи для более приятной игры
         </div>
@@ -379,7 +385,7 @@
         <button class="main-button" id="showKarma">КАРМА</button>
     </div>
 
-    <!-- Мини-окошко для ролей (с описанием внутри) -->
+    <!-- Мини-окошко для ролей -->
     <div id="rolesModal" class="modal">
         <div class="modal-header">
             <h3>Выберите роль</h3>
@@ -415,7 +421,6 @@
                 <img src="images/clown.png" alt="Clown" class="role-icon" onerror="this.style.display='none';"> Clown
             </button>
         </div>
-        <!-- Контейнер для описания выбранной роли -->
         <div id="roleDescription" class="role-description"></div>
     </div>
 
@@ -430,7 +435,6 @@
             <p><kbd>C</kbd> открывает меню снаряжения, если у вашей роли оно есть.</p>
             <p><kbd>B</kbd> — отправлять голосовые сообщения только предателям (Suit Zoom).</p>
             <p><kbd>F1</kbd> показывает это меню (Помощь и настройки).</p>
-            <p><kbd>F3</kbd> показывает меню кастомизации.</p>
             <p><kbd>N</kbd> открывает меню радиокоманд.</p>
             <p><kbd>SHIFT</kbd> позволяет вам бежать, пока есть выносливость.</p>
         </div>
@@ -443,18 +447,19 @@
             <button class="close-btn" id="closeKarma">&times;</button>
         </div>
         <div class="karma-text">
-            Ваша Карма начинается с 100% и уменьшается, если вы наносите урон игрокам своей команды. Становиться меньше, если карма ниже.<br><br>
+            Ваша Карма начинается с 1000 и уменьшается, если вы наносите урон игрокам своей команды. Урон уменьшается, если карма ниже.<br><br>
             Если в начале раунда у вас низкая карма, вы получаете штраф к урону от оружия в этом раунде.<br><br>
             Играя чистые раунды, в которых вы не вредите товарищам, вы восстанавливаете карму. Некоторые роли также получают карму за урон врагам.<br><br>
             Значение кармы, отображаемое в таблице счёта, обновляется только после окончания раунда. Во время раунда истинная карма игрока может быть ниже.
         </div>
     </div>
 
-    <!-- Блок с датой (описания здесь больше нет) -->
+    <!-- Блок с датой -->
     <div class="info-text">
         Today is <span id="date"></span>
     </div>
 
+    <!-- Подвал (здесь будет пасхалка) -->
     <footer class="ttt-footer">
         <p>© 2025 TTT Fan Guide. Not affiliated with Facepunch Studios.</p>
     </footer>
@@ -472,6 +477,7 @@
         const closeKarma = document.getElementById('closeKarma');
         const dateSpan = document.getElementById('date');
         const roleDescriptionDiv = document.getElementById('roleDescription');
+        const footerText = document.querySelector('.ttt-footer p');
 
         // Дата
         const today = new Date();
@@ -488,7 +494,7 @@
         function showRolesModal() {
             hideAllModals();
             rolesModal.classList.add('active');
-            roleDescriptionDiv.innerHTML = ''; // очищаем описание при открытии
+            roleDescriptionDiv.innerHTML = '';
         }
 
         function showControlsModal() {
@@ -545,7 +551,7 @@
             }, speed);
         }
 
-        // Описания ролей (без звёздочек)
+        // Описания ролей
         const roleData = {
             detective: {
                 title: 'Detective',
@@ -605,6 +611,11 @@
         });
         document.getElementById('roleClown').addEventListener('click', () => {
             typeRoleDescription('role-clown', roleData.clown.title, roleData.clown.body, 25);
+        });
+
+        // ===== ПАСХАЛКА =====
+        document.getElementById('easterEgg').addEventListener('click', function() {
+            footerText.textContent = 'tttneverdieslamt';
         });
     </script>
 </body>
